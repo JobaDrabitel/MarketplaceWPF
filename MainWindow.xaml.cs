@@ -36,7 +36,7 @@ namespace MarketplaceWPF
             string email = EmailTB.Text;
             string password = PasswordBox.Password;
 
-            // Создайте JSON-объект для запроса
+            // Создаем запрос
             var loginRequest = new
             {
                 Email = email,
@@ -47,28 +47,26 @@ namespace MarketplaceWPF
             {
                 using (var client = new HttpClient())
                 {
-                    // Установите базовый URL API
+                    // Адрес API
                     client.BaseAddress = new Uri("http://localhost:8080/"); // Укажите адрес своего API
 
-                    // Установите заголовок Content-Type
+                    // Хуй знает че это если честно
                     client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-
-                    // Создайте объект для аутентификации
                
-                    // Сериализуйте объект аутентификации в JSON
+                    // Сериализуем в JSON
                     var jsonBody = JsonSerializer.Serialize(loginRequest);
 
-                    // Отправьте POST-запрос с JSON-телом на авторизацию
+                    // POST-запрос с JSON-телом на авторизацию
                     var content = new StringContent(jsonBody, Encoding.UTF8, "application/json");
                     var response = await client.PostAsync("api/user/auth", content);
 
-                    // Обработайте ответ от сервера
+                    // Ответ
                     if (response.IsSuccessStatusCode)
                     {
                         // Получите JSON-ответ и десериализуйте его в объект пользователя
                         var jsonResponse = await response.Content.ReadAsStringAsync();
-                        jsonResponse = jsonResponse.Replace("\\", "");
-                        jsonResponse = jsonResponse.Substring(1, jsonResponse.Length - 2);
+                        // ХЗ почему, json файл приходит пиздец кривой, в лишних ковычках и с лишними \ поэтому приходится его поправлять, заебало, надеюсь когда-то поправлю
+                        jsonResponse = JSONFormatting (jsonResponse);
                         var user = JsonSerializer.Deserialize<User>(jsonResponse);
                         if (user != null)
                         {
@@ -83,7 +81,7 @@ namespace MarketplaceWPF
                     }
                     else
                     {
-                        // Обработайте ошибку, если необходимо
+                        // На всякий
                         MessageBox.Show("Authorization error: " + response.StatusCode);
                     }
                 }
@@ -95,5 +93,11 @@ namespace MarketplaceWPF
             }
         }
 
+        private static string JSONFormatting(string jsonResponse)
+        {
+            jsonResponse = jsonResponse.Replace("\\", "");
+            jsonResponse = jsonResponse.Substring(1, jsonResponse.Length - 2);
+            return jsonResponse;
+        }
     }
 }
