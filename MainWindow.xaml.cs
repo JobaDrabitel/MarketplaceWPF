@@ -65,8 +65,6 @@ namespace MarketplaceWPF
                     {
                         // Получите JSON-ответ и десериализуйте его в объект пользователя
                         var jsonResponse = await response.Content.ReadAsStringAsync();
-                        // ХЗ почему, json файл приходит пиздец кривой, в лишних ковычках и с лишними \ поэтому приходится его поправлять, заебало, надеюсь когда-то поправлю
-                        jsonResponse = JSONFormatting (jsonResponse);
                         var user = JsonSerializer.Deserialize<User>(jsonResponse);
                         if (user != null)
                         {
@@ -93,11 +91,5 @@ namespace MarketplaceWPF
             }
         }
 
-        private static string JSONFormatting(string jsonResponse)
-        {
-            jsonResponse = jsonResponse.Replace("\\", "");
-            jsonResponse = jsonResponse.Substring(1, jsonResponse.Length - 2);
-            return jsonResponse;
-        }
     }
 }
