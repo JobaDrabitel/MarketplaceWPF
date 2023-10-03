@@ -28,68 +28,15 @@ namespace MarketplaceWPF
     {
         public MainWindow()
         {
-            InitializeComponent();
+			InitializeComponent();
+			MyWebView.Source = new Uri("https://localhost:7034");
         }
-        private async void LogInButton_Click(object sender, RoutedEventArgs e)
+        public string JSONFormatting(string jsonResponse)
         {
-            // Получите введенные значения имени пользователя (или email) и пароля
-            string email = EmailTB.Text;
-            string password = PasswordBox.Password;
-
-            // Создаем запрос
-            var loginRequest = new
-            {
-                Email = email,
-                PasswordHash = password
-            };
-
-            try
-            {
-                using (var client = new HttpClient())
-                {
-                    // Адрес API
-                    client.BaseAddress = new Uri("http://localhost:8080/"); // Укажите адрес своего API
-
-                    // Хуй знает че это если честно
-                    client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-               
-                    // Сериализуем в JSON
-                    var jsonBody = JsonSerializer.Serialize(loginRequest);
-
-                    // POST-запрос с JSON-телом на авторизацию
-                    var content = new StringContent(jsonBody, Encoding.UTF8, "application/json");
-                    var response = await client.PostAsync("api/user/auth", content);
-
-                    // Ответ
-                    if (response.IsSuccessStatusCode)
-                    {
-                        // Получите JSON-ответ и десериализуйте его в объект пользователя
-                        var jsonResponse = await response.Content.ReadAsStringAsync();
-                        var user = JsonSerializer.Deserialize<User>(jsonResponse);
-                        if (user != null)
-                        {
-                            // Пользователь авторизован
-                            MessageBox.Show("Authorization successful.");
-                        }
-                        else
-                        {
-                            // Пользователь не найден или аутентификация не удалась
-                            MessageBox.Show("User not found or authentication failed.");
-                        }
-                    }
-                    else
-                    {
-                        // На всякий
-                        MessageBox.Show("Authorization error: " + response.StatusCode);
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                // Обработайте исключение, если необходимо
-                MessageBox.Show("Exception: " + ex.Message);
-            }
-        }
+			jsonResponse = jsonResponse.Replace("\\", "");
+			jsonResponse = jsonResponse.Substring(1, jsonResponse.Length - 2);
+			return jsonResponse;
+		}
 
     }
 }

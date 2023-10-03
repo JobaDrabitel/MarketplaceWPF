@@ -4,15 +4,9 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:MarketplaceWPF"
+        xmlns:WebView2="clr-namespace:Microsoft.Web.WebView2.Wpf;assembly=Microsoft.Web.WebView2.Wpf"
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800">
-    <Grid>
-        <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
-            <TextBlock Text="Username or Email:" />
-            <TextBox x:Name="EmailTB" Width="200" Margin="5" />
-            <TextBlock Text="Password:" />
-            <PasswordBox x:Name="PasswordBox" Width="200" Margin="5" />
-            <Button Content="Log In" Click="LogInButton_Click" Width="100" Margin="5" />
-        </StackPanel>
-    </Grid>
+
+        <WebView2:WebView2 Name="MyWebView" />
 </Window>
